@@ -49,12 +49,6 @@ while(True):
                 if int(id) == 0:
                     cv2.circle(frame, (cx, cy), 20, (255, 0, 255), cv2.FILLED)
                     
-
-
-
-
-
-
             # draw the points and draw a line through them
             # connect the lines using HAND_CONNECTIONS
             mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
