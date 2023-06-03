@@ -22,15 +22,15 @@ class handDetector():
         imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # process the image
-        results = self.hands.process(imgRGB)
+        self.results = self.hands.process(imgRGB)
 
         # print(results.multi_hand_landmarks)
 
         # if a hand is detected then do the following
-        if results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
 
             # handLms contains data for each hand displayed on the webcam
-            for handLms in results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks:
                 if draw:
 
                     # draw the points and draw a line through them
@@ -39,24 +39,30 @@ class handDetector():
                                                self.mpHands.HAND_CONNECTIONS)
         return frame
             
-                ## get the landmarks and the id number
-                # for id, lm in enumerate(handLms.landmark):
 
-                #     # ratio of pixel value
-                #     print(id,lm)
+    def findPosition(self, frame, handNo = 0, draw = True):
 
-                #     # multiply the ratio to get the pixel value
-                #     # hight, width, channel
-                #     h, w, c = frame.shape
+        lmList = []
+        if self.results.multi_hand_landmarks:
+            myHand = self.results.multi_hand_landmarks[handNo]
 
-                #     # postion of center, the position of each point can be found
-                #     cx, cy = int(lm.x*w), int(lm.y*h)
-                #     print(id, cx, cy)
+            # get the landmarks and the id number
+            for id, lm in enumerate(myHand.landmark):
 
-                #     # if the id value is zero (landmark 0) then draw a purple dot of size 20
-                #     if int(id) == 0:
-                #         cv2.circle(frame, (cx, cy), 20, (255, 0, 255), cv2.FILLED)
-                        
+                # multiply the ratio to get the pixel value
+                # hight, width, channel
+                h, w, c = frame.shape
+
+                # postion of center, the position of each point can be found
+                cx, cy = int(lm.x*w), int(lm.y*h)
+                lmList.append([id, cx, cy])
+
+                if draw:
+
+                    # draw landmarks
+                    cv2.circle(frame, (cx, cy), 10, (255, 0, 255), cv2.FILLED)
+
+            return lmList
 
 
 
@@ -71,6 +77,10 @@ def main():
         # grab video data and return boolean value for ret
         ret, frame = vid.read()
         frame = detector.findHands(frame)
+        lmList = detector.findPosition(frame)
+        # findPosition(frame)
+        if isinstance(lmList, list) != 0:
+            print(lmList[4])
 
         # get the current time
         cTime = time.time()
@@ -85,7 +95,6 @@ def main():
                     (255,0,255),3)
 
         # show the captured frame
-        print('TESTING')
         cv2.imshow('Image', frame)
 
         # break out of webcam if q is pressed
