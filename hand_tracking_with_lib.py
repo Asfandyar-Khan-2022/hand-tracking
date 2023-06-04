@@ -14,7 +14,7 @@ while(True):
     ret, frame = vid.read()
     frame = detector.findHands(frame,)
 
-    # change the hadnNo value to highlight different parts of the hand
+    # change the point value to highlight different parts of the hand
     lmList = detector.findPosition(frame, point = 10)
     # findPosition(frame)
     if isinstance(lmList, list) != 0:
